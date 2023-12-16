@@ -1,0 +1,6 @@
+FileVersion = 1
+
+[Project]
+Name = "LybMath"
+TargetType = "BeefLib"
+StartupObject = "LybMath.Program"

@@ -1,6 +1,6 @@
 namespace LybMath.Vectors;
-
-struct vec2 : System.IParseable<vec2>
+using System;
+struct vec2 : IParseable<vec2>
 {
 	public float x = 0;
 	public float y = 0;
@@ -45,53 +45,70 @@ struct vec2 : System.IParseable<vec2>
 
 	public float this[int64 val]
 	{
-		public get {
+		[Inline] public get {
 			if(val == 0)
 				return x;
 			else if(val == 1)
 				return y;
 			else
-				System.Runtime.FatalError("Vector index out of bounds error");
+				Runtime.FatalError("Vector index out of bounds error");
 		}
 
-		public set mut {
+		[Inline] public set mut {
 			if(val == 0)
 				x = value;
 			else if(val == 1)
 				y = value;
 			else
-				System.Runtime.FatalError("Vector index out of bounds error");
+				Runtime.FatalError("Vector index out of bounds error");
 		}
 	}
 
 	public float Length
 	{
-		public get {
+		[Inline] public get {
 			return System.Math.Sqrt(x*x + y*y);
 		}
 	}
 
 	public float SqrLength
 	{
-		public get {
+		[Inline] public get {
 			return x*x + y*y;
 		}
 	}
 
 	public vec2 Normalized
 	{
-		public get {
+		[Inline] public get {
 			float length = this.Length;
 			return .(x/length,y/length);
 		}
 	}
 
-	public override void ToString(System.String strBuffer)
+	public void Normalize() mut
+	{
+		float lenght = this.Length;
+		this.x = x/lenght;
+		this.y = y/lenght;
+	}
+
+	public static float Dot(vec2 a, vec2 b)
+	{
+		return a.x * b.x + a.y * b.y;
+	}
+
+	public static float Angle(vec2 from, vec2 to)
+	{
+
+	}
+
+	public override void ToString(String strBuffer)
 	{
 		strBuffer.Append(scope $"{x}|{y}");
 	}
 
-	public static System.Result<vec2> Parse(System.StringView val)
+	public static Result<vec2> Parse(StringView val)
 	{
 		if(!val.Contains('|'))
 			return .Err;
@@ -111,9 +128,80 @@ struct vec2 : System.IParseable<vec2>
 		return .Ok(.(xParsed.Value,yParsed.Value));
 	}
 
-	[System.Commutable]
+	[Commutable, Inline]
 	public static vec2 operator+(vec2 lhs, vec2 rhs)
 	{
 		return .(lhs.x + rhs.x, lhs.y + rhs.y);
+	}
+
+	[Inline,Commutable]
+	public static vec2 Add(vec2 lhs, vec2 rhs)
+	{
+		return .(lhs.x + rhs.x, lhs.y + rhs.y);
+	}
+
+	[Inline]
+	public static vec2 operator-(vec2 lhs, vec2 rhs)
+	{
+		return .(lhs.x - rhs.x, lhs.y - rhs.y);
+	}
+
+	[Inline]
+	public static vec2 Subtract(vec2 lhs, vec2 rhs)
+	{
+		return .(lhs.x - rhs.x, lhs.y - rhs.y);
+	}
+
+	[Inline,Commutable]
+	public static vec2 operator*(vec2 lhs, float rhs)
+	{
+		return .(lhs.x * rhs, lhs.y * rhs);
+	}
+
+	[Inline,Commutable]
+	public static vec2 Multiply(vec2 lhs, float rhs)
+	{
+		return .(lhs.x * rhs, lhs.y * rhs);
+	}
+
+	[Inline]
+	public static bool operator==(vec2 lhs, vec2 rhs)
+	{
+		if(lhs.x != rhs.x)
+			return false;
+		else if(lhs.y != rhs.y)
+			return false;
+		return true;
+	}
+
+	[Inline]
+	public static bool Equals(vec2 lhs, vec2 rhs)
+	{
+		if(lhs.x != rhs.x)
+			return false;
+		else if(lhs.y != rhs.y)
+			return false;
+		return true;
+		
+	}
+
+	[Inline]
+	public static bool RoughEquals(vec2 lhs, vec2 rhs)
+	{
+		if((lhs - rhs).SqrLength < 0.00005)
+			return true;
+		return false;
+	}
+
+	[Inline]
+	public static vec2 ToVec2()
+	{
+		Runtime.NotImplemented();
+	}
+
+	[Inline]
+	public static vec2 ToVec3()
+	{
+		Runtime.NotImplemented();
 	}
 }
